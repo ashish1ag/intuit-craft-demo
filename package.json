@@ -1,0 +1,22 @@
+{
+  "name": "stocktrend",
+  "version": "1.0.0",
+  "description": "Craft project for Intuit",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "runtime": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "Ashish Agrawal",
+  "license": "ISC",
+  "dependencies": {
+    "chart.js": "^2.8.0",
+    "concurrently": "^4.1.1",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "nodemon": "^1.19.1",
+    "react-chartjs-2": "^2.7.6"
+  }
+}
