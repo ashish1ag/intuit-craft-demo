@@ -5,7 +5,7 @@ const app = express();
 
 const port = 5000;
 
-const dba = new DBA();
+const Dba = new DBA();
 
 var stock = [
     {id : 1, name : "Now", company : 'Service Now Inc'},
@@ -88,20 +88,20 @@ app.get('/api/user/:id', (req, res) => {
 
 app.post('/api/user/stocks', (req, res) => {
 
-    if(!req.body.userId || !req.body.stockId || !req.body.count ||
-        !req.body.price) {
-        res.status(400).send('Invalid request');
-    }
+    let {userId, stockId, count, price} = req.body;
+     if(!userId || !stockId || !count || !price) {
+         res.status(400).send('Invalid request');
+     }
+      
 
-    if(!user.find(u => u.id === req.body.userId)){
+    if(!user.find(u => u.id === userId)){
         res.status(400).send('No user found to add stock!!!');
     }
     
-    if(!stock.find(s => s.id === req.body.stockId)){
+    if(!stock.find(s => s.id === stockId)){
         res.status(400).send('No stock found to add to the user!!!');
     }
     
-
     let id = userFollowStock.length + 1;
 
     let userObject = {
@@ -115,6 +115,44 @@ app.post('/api/user/stocks', (req, res) => {
     userFollowStock.push(userObject);
 
     res.send(id);
-})
+});
+
+
+app.put('/api/user/stocks', (req, res) => {
+
+    let {userId, stockId, count, price} = req.body;
+     if(!userId || !stockId || !count || !price) {
+         res.status(400).send('Invalid request');
+     }
+      
+    let userStock = userFollowStock.find(us => us.userId === userId && us.stockId === stockId);
+
+    if(!userStock)
+        res.status(404).send("No records found for the given user and stock id");
+
+    userStock.count = count;
+    userStock.purchase_price = price;
+ 
+     res.send(userStock.id);
+ });
+
+
+ app.delete('/api/user/stock/:userId/:stockId', (req, res) => {
+
+    console.log(req.params.userId);
+    console.log(req.params.stockId);
+    const userStock = userFollowStock.find( us => us.userId === parseInt(req.params.userId)
+    && us.stockId === parseInt(req.params.stockId));
+    if(!userStock)
+        res.status(404).send("No records found for the given user and stock id");
+    
+    const index = userFollowStock.indexOf(userStock);
+    userFollowStock.splice(index, 1);
+
+    console.log(userFollowStock);
+    res.send(userStock);
+
+ })
+
 
 app.listen(port, () => console.log(`Listening on port : ${port}`));
